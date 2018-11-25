@@ -1,0 +1,6 @@
+model Test
+
+class Person
+attributes
+    name:String
+end
