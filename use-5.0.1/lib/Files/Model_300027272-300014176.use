@@ -45,6 +45,7 @@ attributes
 	previousWork:PreviousJob
 	researchCompleted:Research
 	publications:Publication
+	
 end
 
 class LanguageProficiency
@@ -84,6 +85,7 @@ attributes
 	reccomendationLetter:ReccomendationLetter
 	coursesNotConsidered:Course
 	applicationStatus: ApplicationStatus
+	applicationDate: Integer
 end
 
 class Education
@@ -174,3 +176,55 @@ association RequestedPositions between
 	Application[*] role application
 end
 
+association PreviousWork between
+	Candidate[1] role hadJobs
+	PreviousJob[*] role theseJobs
+end
+
+association ResearchCompleted between 
+	Candidate[1] role researcher
+	Research[*] role thisResearch
+end
+
+association Publications between
+	Candidate[1] role publisher
+	Publication[*] role thesePublications
+end
+
+association CoursesNotConsidered between
+	Application[1] role applicant
+	Course[*] role courses
+end
+
+association TaWorkExperience between
+	TAWorkExperience[1]
+	WorkAssignment[*]
+end
+
+association Letter between
+	Application[1]
+	ReccomendationLetter[1]
+end
+
+association Work between
+	TAWorkExperience[1]
+	WorkAssignment[*]
+
+--OCL Constraints
+
+constraints
+
+context Candidate inv uniqueStudentNumber:
+	Candidate.allInstances().isUnique(studentNumber)
+
+context Candidate inv notEmptyFirstName:
+	self.firstName.size>0	
+context Candidate inv notEmptyLastName:
+	self.lastName.size>0
+context Candidate inv nonEmptyMiddleName:
+	self.middleName.size>0
+context Candidate inv checkIsRegistered:
+	self.education.degree.registrationStatus <> RegistrationType::notRegistered
+
+context Application inv deadlineNotPast:
+	self.appliedPosting.endDate <= self.applicationDate
