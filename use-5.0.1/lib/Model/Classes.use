@@ -1,0 +1,176 @@
+model TAMS
+
+
+--classes
+
+class Posting
+attributes
+	department:String
+	course:Course
+	jobType:JobType
+	jobDescription:String
+	hourlyRate:Real
+	totalWorkHours:Integer
+	estimatedStudentEnrolment:Integer
+	supervisorName:String
+	startDate:Integer
+	endDate:Integer
+	dutiesList:Duty
+	minQualificationsList:String
+	positionFilled:Boolean
+end
+
+class Duty
+attributes
+	description:String
+	hours:Integer
+end
+
+class Candidate
+attributes
+	studentNumber:String
+	firstName:String
+	lastName:String
+	middleName:String
+	employeeEmail:String
+	studentEmail:String
+	englishProficiency:LanguageProficiency
+	frenchProficiency:LanguageProficiency
+	primaryAddress:Address
+	workAddress:Address
+	phoneNumber:String
+	education:Education
+	requestedPositions:Application
+	TAWorkExperience:TAWorkExperience
+	previousWork:PreviousJob
+	researchCompleted:Research
+	publications:Publication
+end
+
+class LanguageProficiency
+attributes
+	spokenProficiency:Integer
+	writtenProficiency:Integer
+end
+
+class Address
+attributes
+	postalCode:String
+	streetNumber:Integer
+	streetName:String
+	country:String
+	province:String
+	city:String
+end
+
+class Program
+attributes
+	program:String
+	programTitle:String
+	programType:ProgramType
+	registrationStatus:RegistrationType
+	yearOfStudy:Integer
+end
+
+class Course
+attributes
+	courseName:String
+	courseCode:String
+end
+
+class Application
+attributes
+	appliedPosting:Posting
+	reccomendationLetter:ReccomendationLetter
+	coursesNotConsidered:Course
+	applicationStatus: ApplicationStatus
+end
+
+class Education
+attributes
+	degree:Program
+	institution:String
+	dateCompleted:Integer
+end
+
+class TAWorkExperience
+attributes
+	workAssignments:WorkAssignment
+end
+
+class WorkAssignment
+attributes
+	jobType:JobType
+	course:Course
+	academicYear:Integer
+	supervisorName:String
+end
+	
+class Research
+attributes
+	description:String
+end
+
+class Publication
+attributes
+	description:String
+end
+
+class PreviousJob
+attributes
+	company:String
+	startDate:Integer
+	endDate:Integer
+end
+
+class ReccomendationLetter
+attributes
+	relationshipToStudent:String
+	score:Real
+	job:PreviousJob
+	comment:String
+end
+
+associationclass ProfessorCandidateSelection
+between 
+	Posting[1..*]
+	Candidate[0..*]
+attributes
+	applicationList:Application
+	selectedApplication:Application
+operations
+	rejectApplication(applicant:Application)
+	selectApplication(applicant:Application):Application
+end
+
+class AdminAssistant
+end
+
+--enumerations
+
+enum JobType{TA,Corrector}
+
+enum ProgramType{Master,Undergraduate,PhD}
+	
+enum RegistrationType{partTime,fullTime,notRegistered}
+
+enum ApplicationStatus{accepted,rejected,pending}
+
+
+--associations
+
+association Posts between
+	AdminAssistant[1] role posts
+	Posting[*] role poster
+end
+
+association DutiesList between
+	Posting[1] role hasDuties
+	Duty[*] role dutiesList
+end
+
+association RequestedPositions between
+	Candidate[1] role seeker
+	Application[*] role application
+end
+
